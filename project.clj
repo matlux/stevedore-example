@@ -8,7 +8,8 @@
 
   ;]
   :dependencies [[org.clojure/clojure "1.4.0"]
-                 [com.palletops/stevedore "0.8.0-beta.3"]]
+                 [com.palletops/stevedore "0.8.0-beta.3"]
+                 [org.clojars.hozumi/clj-commons-exec "1.0.6"]]
 
   :repositories
   {"sonatype" "https://oss.sonatype.org/content/repositories/releases/"}

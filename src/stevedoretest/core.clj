@@ -17,6 +17,9 @@
  '[pallet.script :only [defscript defimpl with-script-context]]
  '[pallet.stevedore :only [script with-script-language]])
 
+;(use '[clojure.java.shell :only [sh]])
+(require '[clj-commons-exec :as exec])
+
 
 (defn dir [x]
   (str "dir " x))
@@ -80,9 +83,12 @@
 (defn -main
   "I don't do a whole lot."
   [x]
-  (println "run:\n"
+  (println "windows script:\n"
            (script-run-windows)
-           (script-run-linux)))
+           "linux script:\n"
+           (script-run-linux)
+           "run:"
+           @(exec/sh [ "pwd" ])))
 
 
 
