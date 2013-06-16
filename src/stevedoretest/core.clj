@@ -20,10 +20,27 @@
 
 (defscript ls [& args])
 (defimpl ls :default [& args]
-  (ls ~@args))
-
+  ("ls" ~@args))
+(defimpl ls [:windows] [& args]
+  ("dir" ~@args))
 
 (defn script-run []
+  (with-script-language :pallet.stevedore.batch/batch
+
+    (let [tmp "/tmp"
+          ]
+      (with-script-context [:windows]
+        (script
+
+
+        ;;(doseq [x ["a" "b" "c"]] (println @x))
+        (defn foo [x y] ("bar" x))
+        (ls "./")
+        ("ls" ~tmp)
+        ("ls" ~(str "/" "tmp"))
+        )))))
+
+(defn script-run-windows []
   (with-script-language :pallet.stevedore.batch/batch
     (let [tmp "/tmp"]
       (script
