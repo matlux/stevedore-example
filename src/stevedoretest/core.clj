@@ -43,26 +43,29 @@
 (defn script-run-windows []
   (with-script-language :pallet.stevedore.batch/batch
     (let [tmp "/tmp"]
-      (script
+      (with-script-context [:windows]
+        (script
 
 
-       ;;(doseq [x ["a" "b" "c"]] (println @x))
-       (defn foo [x y] ("bar" x))
-       ("ls" "./")
-       ("ls" ~tmp)
-       ("ls" ~(str "/" "tmp"))
-       ))))
+        ;;(doseq [x ["a" "b" "c"]] (println @x))
+        (defn foo [x y] ("bar" x))
+        (~ls "./")
+        ("ls" ~tmp)
+        ("ls" ~(str "/" "tmp"))
+        )))))
 
 (defn script-run-linux []
   (with-script-language :pallet.stevedore.bash/bash
     (let [tmp "/tmp"]
-      (script
-       (doseq [x ["a" "b" "c"]]
-         (println @x))
-       (defn foo [x y] ("bar" x))
-       ("ls" "./")
-       ("ls" ~tmp)
-       ("ls" ~(str "/" "tmp"))))))
+      (with-script-context [:default]
+        (script
+        (doseq [x ["a" "b" "c"]]
+          (println @x))
+        (defn foo [x y] ("bar" x))
+        ("ls" "./")
+        (~ls "./")
+        ("ls" ~tmp)
+        ("ls" ~(str "/" "tmp")))))))
 
 ;(.bindRoot #'pallet.stevedore/*script-language* :pallet.stevedore.bash/bash)
 
@@ -73,7 +76,9 @@
 (defn -main
   "I don't do a whole lot."
   [x]
-  (println "run:" (script-run)))
+  (println "run:\n"
+           (script-run-windows)
+           (script-run-linux)))
 
 
 
