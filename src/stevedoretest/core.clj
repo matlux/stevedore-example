@@ -7,10 +7,26 @@
 
 (require '[pallet.stevedore :refer [script with-script-language]])
 (require 'pallet.stevedore.bash) ;; for bash output
+(use
+ '[pallet.script :only [defscript defimpl with-script-context]]
+ '[pallet.stevedore :only [script with-script-language]])
 
-(defn script-run [] (with-script-language :pallet.stevedore.bash/bash
-   (script
-    ("ls"))))
+
+(defscript ls [& args])
+(defimpl ls :default [& args]
+  (ls ~@args))
+
+
+(defn script-run []
+  (with-script-language :pallet.stevedore.bash/bash
+    (let [tmp "/tmp"]
+      (script
+       (doseq [x ["a" "b" "c"]]
+         (println @x))
+       (defn foo [x y] ("bar" x))
+       ("ls" "./")
+       ("ls" ~tmp)
+       ("ls" ~(str "/" "tmp"))))))
 
 ;(.bindRoot #'pallet.stevedore/*script-language* :pallet.stevedore.bash/bash)
 
@@ -21,15 +37,12 @@
 (defn -main
   "I don't do a whole lot."
   [x]
-  (println x "Hello, World!" (script-run)))
+  (println "run:" (script-run)))
 
 
 
 (comment
 
-(script/defscript ls [& args])
-(script/defimpl ls :default [& args]
-  (ls ~@args))
 
 
 (defn script-run [] (with-script-language :pallet.stevedore.bash/bash
