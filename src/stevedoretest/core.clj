@@ -1,6 +1,12 @@
 (ns stevedoretest.core
 
-
+  (:use
+   [pallet.common.string :only [quoted]]
+   pallet.stevedore
+   pallet.stevedore.batch
+   clojure.test)
+  (:require
+   [pallet.stevedore.common :as common])
 
   )
 
@@ -18,6 +24,19 @@
 
 
 (defn script-run []
+  (with-script-language :pallet.stevedore.batch/batch
+    (let [tmp "/tmp"]
+      (script
+
+
+       ;;(doseq [x ["a" "b" "c"]] (println @x))
+       (defn foo [x y] ("bar" x))
+       ("ls" "./")
+       ("ls" ~tmp)
+       ("ls" ~(str "/" "tmp"))
+       ))))
+
+(defn script-run-linux []
   (with-script-language :pallet.stevedore.bash/bash
     (let [tmp "/tmp"]
       (script
