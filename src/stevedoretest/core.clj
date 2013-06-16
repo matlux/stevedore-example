@@ -6,7 +6,8 @@
    pallet.stevedore.batch
    clojure.test)
   (:require
-   [pallet.stevedore.common :as common])
+   [pallet.stevedore.common :as common]
+   [clojure.string :as string])
 
   )
 
@@ -37,27 +38,23 @@
   (str "dir " x))
 
 
+(use 'pallet.stevedore.common)
+
+(defmethod emit-special [:pallet.stevedore.batch/batch 'doseq]
+  [type [ doseq [arg values] & exprs]]
+  (str "for " (emit arg) " in " (string/join " " (map emit values))
+       "; do\n"
+       (emit-do exprs)
+       "done"))
+
+
 (defscript ls [& args])
 (defimpl ls :default [& args]
   ("ls" ~@args))
 (defimpl ls [:windows] [& args]
   (~dir ~@args))
 
-(defn script-run []
-  (with-script-language :pallet.stevedore.batch/batch
 
-    (let [tmp "/tmp"
-          ]
-      (with-script-context [:windows]
-        (script
-
-
-        ;;(doseq [x ["a" "b" "c"]] (println @x))
-        (defn foo [x y] ("bar" x))
-        (ls "./")
-        ("ls" ~tmp)
-        ("ls" ~(str "/" "tmp"))
-        )))))
 
 (defn script-run-windows []
   (with-script-language :pallet.stevedore.batch/batch
@@ -66,8 +63,12 @@
         (script
 
 
-        ;;(doseq [x ["a" "b" "c"]] (println @x))
+        (doseq [x ["a" "b" "c"]] (println @x))
         (defn foo [x y] ("bar" x))
+        (println (deref TMPDIR))
+        (println (@TMPDIR2-/tmp))
+        (set! x 1)
+        (set! R @("cat" "./~scripttmp.sh"))
         (~ls "./")
         ("ls" ~tmp)
         ("ls" ~(str "/" "tmp"))
@@ -81,7 +82,10 @@
         (doseq [x ["a" "b" "c"]]
           (println @x))
         (defn foo [x y] ("bar" x))
-        ("ls" "./")
+        (println (deref TMPDIR))
+        (println (@TMPDIR2-/tmp))
+        (set! x 1)
+        (set! R @("cat" "./~scripttmp.sh"))
         (~ls "./")
         ("ls" ~tmp)
         ("ls" ~(str "/" "tmp")))))))
