@@ -21,6 +21,18 @@
 (require '[clj-commons-exec :as exec])
 
 
+(defn write-file
+  "Writes a value to a file"
+  [value out-file]
+  (spit out-file "" :append false)
+  (with-open [out-data (clojure.java.io/writer out-file)]
+      (.write out-data (str value))))
+
+(defn read-file [in-file]
+  (with-open [rdr (clojure.java.io/reader in-file)]
+    (reduce conj [] (line-seq rdr))))
+
+
 (defn dir [x]
   (str "dir " x))
 
@@ -77,7 +89,10 @@
 ;(.bindRoot #'pallet.stevedore/*script-language* :pallet.stevedore.bash/bash)
 
 
-
+(defn run-script [s]
+  (write-file s "./~scripttmp.sh")
+  @(exec/sh ["chmod" "+x" "./~scripttmp.sh" ])
+  @(exec/sh ["./~scripttmp.sh" ]))
 
 
 (defn -main
@@ -88,7 +103,9 @@
            "linux script:\n"
            (script-run-linux)
            "run:"
-           @(exec/sh [ "pwd" ])))
+           (run-script (script-run-linux))
+          ; @(exec/sh [ "pwd" ])
+           ))
 
 
 
