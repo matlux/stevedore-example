@@ -82,8 +82,10 @@
         (doseq [x ["a" "b" "c"]]
           (println @x))
         (defn foo [x y] ("bar" x))
+        (defn bar [x] (if (= x 42) "true" (+ 3 x)))
         (println (deref TMPDIR))
         (println (@TMPDIR2-/tmp))
+        ;("bar" 22)
         (set! x 1)
         (set! R @("cat" "./~scripttmp.sh"))
         (~ls "./")
