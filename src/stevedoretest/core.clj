@@ -18,11 +18,15 @@
  '[pallet.stevedore :only [script with-script-language]])
 
 
+(defn dir [x]
+  (str "dir " x))
+
+
 (defscript ls [& args])
 (defimpl ls :default [& args]
   ("ls" ~@args))
 (defimpl ls [:windows] [& args]
-  ("dir" ~@args))
+  (~dir ~@args))
 
 (defn script-run []
   (with-script-language :pallet.stevedore.batch/batch
